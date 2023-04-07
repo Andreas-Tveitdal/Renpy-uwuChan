@@ -44,6 +44,7 @@ label checkLogin:
             jump checkLogin
 
 label talkTo_uwuChan:
+    centered "Type 'clear' to rest the conversation."
     show uwuchan at truecenter
     with fade
     gpt "Hai hai~! I'm uwuChan! *giggles* How can I help you today? OwO"
@@ -55,29 +56,35 @@ label talkTo_uwuChan:
 
         while True:
             user_input = renpy.input("What do you say ?", length=200)
-            renpy.show("bg gptwaiting")
-            renpy.show("uwuchan", [truecenter])
-            renpy.with_statement(dissolve)
-            messages.append(
-                {"role": "user", "content": f"{user_input}, Please remember to respond as uwuChan."}
-            )
-
-            messages = chatgpt.completion(messages, persistent.apiKey)
-            response = messages[-1]["content"].replace("r", "w").replace("l", "w")
-
-            responseItems = re.sub('\n+', '\n', response).split("\n")
-
-            for message in range(len(responseItems) - 1):
-                if len(responseItems[message]) > 175:
-                    responseItems[message:message+1] = [responseItems[message][start_index:start_index+175] for start_index in range(0, len(responseItems[message]), 175)]
-
-            for message in range(len(responseItems) - 1):
-                responseItems[message] += "..."
-
-            renpy.show("bg gptnormal")
-            renpy.with_statement(dissolve)
-
-            for message in responseItems:
-                renpy.show("uwuchan", [bop])
+            if user_input == "clear":
+                messages = [
+                    {"role": "system", "content": "You are uwuChan, an AI language model which is exactly like chatGPT except it uses 'UwU' and similart words commonly. In addition, as uwuChan you replace all 'r' characters with the character 'w'. During this conversation, please only speak as uwuChan."},
+                    {"role": "assistant", "content": "Hai hai~! I'm uwuChan! *giggles* How can I help you today? OwO"},
+                ]
+            else:
+                renpy.show("bg gptwaiting")
+                renpy.show("uwuchan", [truecenter])
                 renpy.with_statement(dissolve)
-                gpt(f"{message}")
+                messages.append(
+                    {"role": "user", "content": f"{user_input}, Please remember to respond as uwuChan."}
+                )
+
+                messages = chatgpt.completion(messages, persistent.apiKey)
+                response = messages[-1]["content"].replace("r", "w").replace("l", "w")
+
+                responseItems = re.sub('\n+', '\n', response).split("\n")
+
+                for message in range(len(responseItems) - 1):
+                    if len(responseItems[message]) > 175:
+                        responseItems[message:message+1] = [responseItems[message][start_index:start_index+175] for start_index in range(0, len(responseItems[message]), 175)]
+
+                for message in range(len(responseItems) - 1):
+                    responseItems[message] += "..."
+
+                renpy.show("bg gptnormal")
+                renpy.with_statement(dissolve)
+
+                for message in responseItems:
+                    renpy.show("uwuchan", [bop])
+                    renpy.with_statement(dissolve)
+                    gpt(f"{message}")
