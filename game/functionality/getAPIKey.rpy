@@ -26,6 +26,6 @@ label getAPIKey:
 
 label .check:
     hide screen getAPIKeyField
-    if not inputValue == "":
+    if not inputValue.strip() == "":
         $ persistent.apiKey = inputValue.strip()
     jump checkLogin

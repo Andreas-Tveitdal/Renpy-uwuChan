@@ -28,7 +28,7 @@ def completion(messages, api_key="", proxy=''):
     response = requests.post(url, headers=headers, data=json.dumps(data))
 
     # Check if the response status code is 200 (successful)
-    if response.status_code == 200:
+    if response.status_code == 200 or response.status_code == 429:
         # Extract the message from the response JSON and append it to the messages list
         completion = response.json()["choices"][0]["message"]
         messages.append(completion)
